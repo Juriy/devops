@@ -1,0 +1,19 @@
+---
+  - hosts: all
+    tasks:
+      - name: update all packages
+        yum: name='*' state=latest
+
+      - name: install vim
+        become: yes
+        yum: name=vim state=latest
+
+      - name: install net-tools
+        become: yes
+        yum: name=net-tools state=latest
+
+      - name: install Development Tools
+        become: yes
+        yum:
+          name: "@Development tools"
+          state: present

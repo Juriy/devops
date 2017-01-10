@@ -1,0 +1,18 @@
+---
+  - hosts: all
+    tasks:
+
+      - name: create user serhiy
+        become: yes
+        user:  
+          name: serhiy
+          groups: wheel
+          append: yes
+          generate_ssh_key: yes
+
+      - name: add authorized key
+        become: yes
+        authorized_key:
+          user: serhiy
+          state: present
+          key: "{{ lookup('file', '../files/keys/serhiy-work.pub') }}"

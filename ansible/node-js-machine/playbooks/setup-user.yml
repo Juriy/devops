@@ -1,0 +1,27 @@
+---
+  - hosts: all
+    tasks:
+      - name: Create 'wheel' group if not present
+        group:
+          name: wheel
+          state: present
+
+      - name: create user juriy
+        user:
+          name: juriy
+          groups: wheel
+          append: yes
+          generate_ssh_key: yes
+
+      - name: add authorized key
+        authorized_key:
+          user: juriy
+          state: present
+          key: "{{ lookup('file', '/Users/juriy/.ssh/id_rsa.pub') }}"
+
+      - name: Allow 'wheel' group to have passwordless sudo
+        lineinfile:
+          dest: /etc/sudoers
+          state: present
+          regexp: '^%wheel'
+          line: '%wheel ALL=(ALL) NOPASSWD: ALL'

@@ -1,0 +1,26 @@
+---
+  - hosts: all
+    tasks:
+      - name: install nvm
+        become: yes
+        shell: > 
+          curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.0/install.sh | NVM_DIR=/usr/local/nvm bash
+          creates=/usr/local/nvm/nvm.sh
+      
+      - name: install node 6 and 7
+        become: yes
+        shell: >
+          /bin/bash -c "source /usr/local/nvm/nvm.sh && nvm install 6 && nvm install 7 && nvm alias default 7"
+          creates=/usr/local/nvm/alias
+
+      - name: add nvm to .bashrc
+        lineinfile:
+          dest: ~/.bashrc
+          line: export NVM_DIR="/usr/local/nvm" && [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+          regexp: "^export NVM_DIR"
+
+      - name: install global node modules
+        become: yes
+        shell: >
+          /bin/bash -c "source /usr/local/nvm/nvm.sh && npm install -g http-server nodemon pm2"
+          creates=$NVM_BIN/http-server

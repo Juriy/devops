@@ -1,0 +1,16 @@
+# This playbook will install mongo however it will
+# not open mongo to outside world (bind ip remains 127.0.0.1)
+---
+  - hosts: all
+    tasks:
+      - name: copy mongo .repo file
+        become: yes
+        copy: src=../files/mongo.repo dest=/etc/yum.repos.d/mongodb-org-3.2.repo
+
+      - name: install mongo
+        become: yes
+        yum: name=mongodb-org state=latest
+
+      - name: enable and start mongo
+        become: yes
+        service: name=mongod enabled=yes state=started
